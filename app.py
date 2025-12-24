@@ -1,12 +1,22 @@
 import sqlite3 as sql
+from flask import Flask, render_template
 
-connection = sql.connect("testDB.db")
 
-cursor = connection.cursor()
+#Flask App
+app = Flask(__name__)
 
-while(True):
+@app.route("/")
+def home():
+
+    #Establish connection to DB
+    connection = sql.connect("testDB.db")
+
+    cursor = connection.cursor()
+
     query = input() 
     result = cursor.execute(query)
-    print(result.fetchall())
 
-    
+    return result.fetchall()
+
+if __name__ == "__main__":
+    app.run()
