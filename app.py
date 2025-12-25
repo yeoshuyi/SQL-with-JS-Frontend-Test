@@ -1,6 +1,6 @@
 import sqlite3 as sql
 from flask_cors import CORS
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, request
 
 
 #Flask App
@@ -13,15 +13,20 @@ def home():
     return "Server Online"
 
 #For Reading
-@app.route("/read")
+@app.route("/read", methods=['POST'])
 def read():
+
+    #Get queries from React
+    data = request.get_json()
+    limit = data.get('limit')
+    gender = data.get('gender')
 
     #Establish connection to DB
     connection = sql.connect("dataset.db")
 
     cursor = connection.cursor()
 
-    query = "SELECT * FROM customer LIMIT 10;"
+    query = "SELECT * FROM customer WHERE gender LIKE " + gender + " LIMIT " + str(limit)
     result = cursor.execute(query)
 
     return jsonify(result.fetchall())
